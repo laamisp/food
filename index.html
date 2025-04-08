@@ -42,23 +42,11 @@
             zoom: 14
           });
 
-          // Step 5: Create a Circle with 4 km radius around the user's location
-          const circle = new google.maps.Circle({
-            map: map,
-            center: userLocation,
-            radius: 4000,  // 4 km
-            strokeColor: "#FF0000",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0.35
-          });
-
           // Step 6: Use Places API to find restaurants in the area
           const service = new google.maps.places.PlacesService(map);
           service.nearbySearch({
             location: userLocation,
-            radius: 4000,  // 4 km
+            radius: 2000,  // 2 km
             type: ['restaurant']
           }, function(results, status) {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
