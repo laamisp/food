@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurant Map</title>
+  <style>
+    /* Set the height of the map */
+    #map {
+      height: 100%;
+    }
+    /* Make sure the page takes up the full screen */
+    body, html {
+      height: 100%;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Map Container -->
+  <div id="map"></div>
+
+  <!-- Include Google Maps API -->
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCf1oO3g9oEx-pQkmW2yRQVhbLUwTwL_uk&libraries=places&callback=initMap">
+  </script>
+
+  <script>
+    function initMap() {
+      // Step 3: Get user's current position using Geolocation API
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          const userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          // Step 4: Create a map centered at the user's location
+          const map = new google.maps.Map(document.getElementById('map'), {
+            center: userLocation,
+            zoom: 14
+          });
+
+          // Step 5: Create a Circle with 4 km radius around the user's location
+          const circle = new google.maps.Circle({
+            map: map,
+            center: userLocation,
+            radius: 4000,  // 4 km
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#FF0000",
+            fillOpacity: 0.35
+          });
+
+          // Step 6: Use Places API to find restaurants in the area
+          const service = new google.maps.places.PlacesService(map);
+          service.nearbySearch({
+            location: userLocation,
+            radius: 4000,  // 4 km
+            type: ['restaurant']
+          }, function(results, status) {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+              results.forEach(function(place) {
+                new google.maps.Marker({
+                  map: map,
+                  position: place.geometry.location,
+                  title: place.name
+                });
+              });
+            }
+          });
+        });
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+  </script>
+</body>
+</html>
